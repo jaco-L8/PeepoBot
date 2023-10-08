@@ -11,14 +11,19 @@ module.exports = {
         .addIntegerOption(option =>
             option.setName('length')
                 .setDescription('The length of the words to retrieve.')
-                .setRequired(true)),
+                .setRequired(false)),
 
 
     async execute(interaction) {
         const number = interaction.options.getInteger('number');
         const length = interaction.options.getInteger('length');
         const fetch = await import('node-fetch');
-        const url = `https://random-word-api.herokuapp.com/word?number=${number}&length=${length}`;
+        let url;
+        if (length == null) {
+            url = `https://random-word-api.herokuapp.com/word?number=${number}`;
+        } else {
+            url = `https://random-word-api.herokuapp.com/word?number=${number}&length=${length}`;
+        }
         const response = await fetch.default(url);
         const words = await response.json();
         let reply = `Here are your ${number} random words with length ${length}:`;
