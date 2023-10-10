@@ -32,7 +32,7 @@ module.exports = {
     async autocomplete(interaction) {
         const focusedValue = interaction.options.getFocused();
         const choices = Array.from(moment.tz.names());
-        console.log(choices);
+        //console.log(choices);
         const filteredChoices = choices.filter(choice => choice.toLowerCase().includes(focusedValue.toLowerCase())).slice(0, 25);
         await interaction.respond(
             filteredChoices.map(choice => ({ name: choice, value: choice })),
