@@ -3,8 +3,14 @@ const fs = require('fs');
 
 let isLive = false;
 
+function getIsLive() {
+    return isLive;
+}
+
+
 module.exports = {
     name: 'ready',
+    getIsLive: getIsLive,
     execute: async (client) => {
         const channel = client.channels.cache.get('1152979295799615551');
         if (!channel) {

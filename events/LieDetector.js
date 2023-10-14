@@ -33,21 +33,13 @@ module.exports = {
         const possibleMessages = ['ludwig is live', 'peechat is live', 'lud is live', 'peechat up', 'prechat is up', 'peechat is up'];
         const messageContent = message.content.toLowerCase();
 
-        if (possibleMessages.some(msg => {
-            if (messageContent.includes(msg)) {
-                return true;
-            }
-        
-            for (let i = 0; i <= messageContent.length - msg.length; i++) {
-                const substring = messageContent.substring(i, i + msg.length);
-                if (levenshteinDistance(substring, msg) <= 3) {
-                    return true;
-                }
-            }
-        
-            return false;
-        })) {
-            if (ludwigIsLive.isLive) {
+        if (message.channel.id === '1152979295799615551') {
+            return;
+        }
+
+        if (possibleMessages.some(msg => messageContent.includes(msg) || levenshteinDistance(msg, messageContent) <= 3)) {
+            if (ludwigIsLive.getIsLive()) {
+                
                 message.reply('TRUE <:POGGIES:1153039475295924244>');
             } else {
                 message.reply('YOU ARE A LIAR <:ReallyMad:1155244651331207248>');
@@ -67,7 +59,7 @@ module.exports = {
 
 
 
-//old code
+// old code
 /*client.on('messageCreate', async (message) => {
     // check for the message, regardless of case
     if (message.content === 'ludwig is live') {

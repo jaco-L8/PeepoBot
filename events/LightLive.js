@@ -8,7 +8,6 @@ let isLive = false;
 
 module.exports = {
     name: 'ready',
-    isLive: isLive,
     execute: async (client) => {
         const channel = client.channels.cache.get('1152979295799615551');
         if (!channel) {
