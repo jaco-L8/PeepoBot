@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const { token } = require('./config.json');
+const eventStatesPath = path.join(__dirname, 'eventStates.json');
 
 
 const client = new Client({ intents: [
@@ -37,13 +38,29 @@ const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
-	const filePath = path.join(eventsPath, file);
-	const event = require(filePath);
-	if (event.once) {
-		client.once(event.name, (...args) => event.execute(...args));
-	} else {
-		client.on(event.name, (...args) => event.execute(...args));
-	}
+    const filePath = path.join(eventsPath, file);
+    const event = require(filePath);
+    const eventName = file.slice(0, -3); // Remove the .js extension
+    console.log(`Loaded event: ${eventName}`);
+    if (event.once) {
+        client.once(event.name, (...args) => {
+            // update eventStates
+            eventStates = JSON.parse(fs.readFileSync(eventStatesPath));
+
+            if (eventStates[eventName]) {
+                event.execute(...args);
+            }
+        });
+    } else {
+        client.on(event.name, (...args) => {
+            // update eventStates
+            eventStates = JSON.parse(fs.readFileSync(eventStatesPath));
+
+            if (eventStates[eventName]) {
+                event.execute(...args);
+            }
+        });
+    }
 }
 
 
