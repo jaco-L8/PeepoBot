@@ -32,10 +32,10 @@ module.exports = {
 
         const channel = await interaction.guild.channels.fetch('1166882966841085962');
 
-        //  check if the date is a valid date
-        const dateRegex = /^([1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/;
+         //  check if the date is a valid date
+        const dateRegex = /^(0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/;
         if (!dateRegex.test(date)) {
-            return interaction.reply({ content: 'Invalid date format. Please provide a valid date (M-DD).', ephemeral: true });
+            return interaction.reply({ content: 'Invalid date format. Please provide a valid date (MM-DD).', ephemeral: true });
         }
 
         // Convert the date string to a Date object
