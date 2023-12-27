@@ -20,6 +20,10 @@ module.exports = {
                     .setDescription('The date of the reminder (MM-DD)')
                     .setRequired(true))
             .addStringOption(option =>
+                option.setName('time')
+                    .setDescription('The time (24H) of the reminder (HH:MM) in PST')
+                    .setRequired(false))
+            .addStringOption(option =>
                 option.setName('description')
                     .setDescription('discription of the schedule')
                     .setRequired(false)),
@@ -28,29 +32,43 @@ module.exports = {
     async execute(interaction) { 
         const name = interaction.options.getString('name').toUpperCase();
         const date = interaction.options.getString('date');
+        const time = interaction.options.getString('time') || ' - ';
         const description = interaction.options.getString('description') || ' - ';
 
-        const channel = await interaction.guild.channels.fetch('1166882966841085962');
+        const channel = await interaction.guild.channels.fetch('1157333022203457647');//('1166882966841085962');
 
          //  check if the date is a valid date
         const dateRegex = /^(0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/;
         if (!dateRegex.test(date)) {
             return interaction.reply({ content: 'Invalid date format. Please provide a valid date (MM-DD).', ephemeral: true });
         }
+        // check if the time is a valid time
+        const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+        if (!timeRegex.test(time)) {
+            return interaction.reply({ content: 'Invalid time format. Please provide a valid time (HH:MM).', ephemeral: true });
+        }
 
-        // Convert the date string to a Date object
-        function getDateObject(date) {
+        function getDateObject(date, time) {
             let currentYear = new Date().getFullYear();
             let currentMonth = new Date().getMonth() + 1; // getMonth() returns month index starting from 0
             let dateParts = date.split("-");
             let year = currentYear;
-        
+
             // If the month from the date is less than the current month, increment the year by one
             if (parseInt(dateParts[0]) < currentMonth) {
                 year++;
             }
-            
-            return new Date(year, dateParts[0] - 1, dateParts[1]);
+
+            // If no time is provided, default to 16:00 (4 PM)
+            let timeParts = (time || "16:00").split(":");
+
+            // Create the Date object in PST 
+            let dateObject = new Date(Date.UTC(year, parseInt(dateParts[0]) - 1, parseInt(dateParts[1]), parseInt(timeParts[0]) - 8, parseInt(timeParts[1])));
+
+            // adjust time to match local time
+            dateObject.setHours(dateObject.getHours() + 16);
+
+            return dateObject;
         };
 
         //create a simple embed that has the name and date of the schedule
@@ -58,7 +76,7 @@ module.exports = {
             color: randomColor(),
             title: name,
             description: description,
-            timestamp: getDateObject(date),
+            timestamp: getDateObject(date, time),
             footer: {
                 text: 'Date:'
             }
