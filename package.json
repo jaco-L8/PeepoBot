@@ -10,8 +10,6 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "node-cron": "^3.0.2",
-    "node-fetch": "^3.3.2",
-    "twitch": "^4.6.7",
-    "twitch-auth": "^4.6.7"
+    "node-fetch": "^3.3.2"
   }
 }
