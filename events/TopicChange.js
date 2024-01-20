@@ -1,4 +1,6 @@
-const axios = require('axios');
+
+const fetch = require('node-fetch');
+const cheerio = require('cheerio');
 
 module.exports = {
     name: 'ready',
@@ -11,9 +13,11 @@ module.exports = {
 
         setInterval(async () => {
             const url = 'https://www.youtube.com/@ludwig/live';
-            const response = await axios.get(url);
+            const response = await fetch(url);
+            const body = await response.text();
+            const $ = cheerio.load(body);
 
-            if (response.status === 200 && response.data.includes('live-chat')) {
+            if (response.status === 200 && $('body').text().includes('Top chat')) {
                 channel.setTopic(' :red_circle: Ludwig is currently live <a:MewSpin:1153384976356737125> :red_circle: ');
                 //console.log('Ludwig is currently live');
             } else {
