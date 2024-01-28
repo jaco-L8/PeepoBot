@@ -35,7 +35,7 @@ module.exports = {
         const time = interaction.options.getString('time') || ' - ';
         const description = interaction.options.getString('description') || ' - ';
 
-        const channel = await interaction.guild.channels.fetch('1157333022203457647');//('1166882966841085962');
+        const channel = await interaction.guild.channels.fetch('1166882966841085962');
 
          //  check if the date is a valid date
         const dateRegex = /^(0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/;

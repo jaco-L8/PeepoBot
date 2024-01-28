@@ -10,6 +10,7 @@
     "moment-timezone": "^0.5.43",
     "node-cron": "^3.0.2",
     "node-fetch": "^2.7.0",
-    "puppeteer": "^21.7.0"
+    "puppeteer": "^21.7.0",
+    "youtubei.js": "^9.0.1"
   }
 }
