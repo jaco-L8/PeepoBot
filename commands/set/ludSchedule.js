@@ -1,5 +1,6 @@
 const cron = require('node-cron');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { get } = require('http');
 
 
 let randomColor = () => {
@@ -32,7 +33,7 @@ module.exports = {
     async execute(interaction) { 
         const name = interaction.options.getString('name').toUpperCase();
         const date = interaction.options.getString('date');
-        const time = interaction.options.getString('time') || ' - ';
+        const time = interaction.options.getString('time') || undefined;
         const description = interaction.options.getString('description') || ' - ';
 
         const channel = await interaction.guild.channels.fetch('1166882966841085962');
@@ -44,11 +45,12 @@ module.exports = {
         }
         // check if the time is a valid time
         const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
-        if (!timeRegex.test(time)) {
+        if (!timeRegex.test(time) && time !== undefined) {
             return interaction.reply({ content: 'Invalid time format. Please provide a valid time (HH:MM).', ephemeral: true });
         }
 
-        function getDateObject(date, time) {
+        // create Date object from the date and time
+        function getDateTimeObject(date, time) {
             let currentYear = new Date().getFullYear();
             let currentMonth = new Date().getMonth() + 1; // getMonth() returns month index starting from 0
             let dateParts = date.split("-");
@@ -59,8 +61,7 @@ module.exports = {
                 year++;
             }
 
-            // If no time is provided, default to 16:00 (4 PM)
-            let timeParts = (time || "16:00").split(":");
+            let timeParts = (time).split(":");
 
             // Create the Date object in PST 
             let dateObject = new Date(Date.UTC(year, parseInt(dateParts[0]) - 1, parseInt(dateParts[1]), parseInt(timeParts[0]) - 8, parseInt(timeParts[1])));
@@ -76,9 +77,9 @@ module.exports = {
             color: randomColor(),
             title: name,
             description: description,
-            timestamp: getDateObject(date, time),
+            timestamp: time ? getDateTimeObject(date, time) : undefined,
             footer: {
-                text: 'Date:'
+                text: time ? 'Date:' : `Date:  •  ${getDateTimeObject(date, '00:00').toDateString()}`,
             }
         }
 
